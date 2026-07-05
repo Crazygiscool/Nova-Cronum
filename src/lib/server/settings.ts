@@ -1,4 +1,5 @@
-import { loadSettings, type CustomFieldConfig, type EntryFormatConfig } from "@crazygiscool/cap";
+import { CAPSettingsSchema, type CustomFieldConfig } from "@crazygiscool/cap";
+import rawSettings from "../../../settings.json" with { type: "json" };
 import themeConfig from "../../../theme.config.json" with { type: "json" };
 
 export interface ThemeConfig {
@@ -17,15 +18,10 @@ export interface ThemeConfig {
 	pages: { id: string; label: string; enabled: boolean }[];
 }
 
-const SETTINGS_PATH = "./settings.json";
-
-let _settings: ReturnType<typeof loadSettings> | null = null;
-let _theme: ThemeConfig = themeConfig as ThemeConfig;
+const _theme: ThemeConfig = themeConfig as ThemeConfig;
+const _settings = CAPSettingsSchema.parse(rawSettings);
 
 export function getSettings() {
-	if (!_settings) {
-		_settings = loadSettings(SETTINGS_PATH);
-	}
 	return _settings;
 }
 
@@ -34,5 +30,5 @@ export function getTheme(): ThemeConfig {
 }
 
 export function getCustomFields(): CustomFieldConfig[] {
-	return getSettings().entryFormat.customFields ?? [];
+	return _settings.entryFormat.customFields ?? [];
 }
