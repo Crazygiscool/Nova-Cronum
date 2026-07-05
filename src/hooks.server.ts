@@ -8,7 +8,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const url = new URL(event.request.url);
 
 		// Admin routes manage their own auth (session or env key)
-		if (url.pathname.startsWith("/api/v1/admin/")) {
+		if (url.pathname.startsWith("/api/v1/admin/") || url.pathname.startsWith("/admin/")) {
 			return resolve(event);
 		}
 
