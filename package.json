@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@crazygiscool/cap": "^1.1.10",
+		"@vercel/analytics": "^2.0.1",
 		"mongodb": "^6.21.0",
 		"zod": "^3.25.76"
 	}
