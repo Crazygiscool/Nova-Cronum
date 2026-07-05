@@ -6,21 +6,21 @@
 	const keys = $derived(Object.keys(data.continuities).sort());
 </script>
 
-<div class="mx-auto max-w-6xl">
+<div class="mx-auto" style="max-width: 1200px">
 	<div class="mb-8">
-		<h2 class="font-heading text-3xl font-bold text-white">Continuity Streams</h2>
-		<p class="mt-1 text-muted">Browse by timeline/continuity</p>
+		<h2 class="font-heading text-3xl font-bold tracking-tight text-white">CONTINUITY STREAMS</h2>
+		<p class="serial-tag mt-2">BROWSE BY TIMELINE / CONTINUITY</p>
 	</div>
 
-	<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+	<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 		{#each keys as c}
 			{@const members = data.continuities[c]}
-			<a href="/entries?continuity={c}" class="card block p-6">
+			<a href="/entries?continuity={c}" class="panel p-6" class:panel-glow={true}>
 				<div class="mb-3 flex items-center justify-between">
 					<h3 class="font-heading text-xl font-semibold text-white">{c}</h3>
-					<span class="badge border-accent text-accent">{members.length}</span>
+					<span class="badge-bracket">{members.length}</span>
 				</div>
-				<p class="line-clamp-2 text-sm text-muted">
+				<p class="line-clamp-2 text-sm" style="color: var(--muted)">
 					{members.map((m) => m.name).join(", ")}
 				</p>
 			</a>

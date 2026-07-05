@@ -6,14 +6,21 @@ export interface ThemeConfig {
 	faviconPath: string;
 	theme: {
 		primaryColor: string;
+		primaryOnColor: string;
 		accentColor: string;
+		secondaryColor: string;
+		secondaryRedColor: string;
 		backgroundColor: string;
 		surfaceColor: string;
+		surfaceLowColor: string;
 		cardColor: string;
 		textColor: string;
 		mutedTextColor: string;
+		outlineColor: string;
+		outlineVariantColor: string;
 		fontFamily: string;
 		headingFont: string;
+		monoFont: string;
 	};
 	pages: { id: string; label: string; enabled: boolean }[];
 }

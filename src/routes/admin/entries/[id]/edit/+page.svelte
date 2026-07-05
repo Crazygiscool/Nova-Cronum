@@ -34,7 +34,7 @@
 		error = "";
 
 		if (!name || !continuityId) {
-			error = "Name and Continuity ID are required";
+			error = "NAME AND CONTINUITY ID ARE REQUIRED";
 			saving = false;
 			return;
 		}
@@ -63,57 +63,60 @@
 			goto(`/entries/${entry.id}`);
 		} else {
 			const err = await res.json();
-			error = err.error || "Failed to update entry";
+			error = err.error || "FAILED TO UPDATE ENTRY";
 		}
 		saving = false;
 	}
 </script>
 
-<div class="mx-auto max-w-3xl">
+<div class="mx-auto" style="max-width: 800px">
 	<nav class="mb-6">
-		<a href="/entries/{entry.id}" class="text-sm text-muted hover:text-accent">&larr; Back to Entry</a>
+		<a href="/entries/{entry.id}" class="serial-tag hover:text-accent">&lt; BACK TO ENTRY</a>
 	</nav>
 
 	<div class="mb-8">
-		<h2 class="font-heading text-3xl font-bold text-white">Edit Entry</h2>
-		<p class="mt-1 text-muted">{entry.name}</p>
+		<h2 class="font-heading text-3xl font-bold tracking-tight text-white">EDIT ENTRY</h2>
+		<p class="serial-tag mt-2">{entry.name}</p>
 	</div>
 
-	<form class="card space-y-6 p-8" onsubmit={handleSubmit}>
+	<form class="panel space-y-6 p-8" onsubmit={handleSubmit}>
 		{#if error}
-			<div class="rounded-lg border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-400">{error}</div>
+			<div class="p-4 text-sm" style="border: 1px solid var(--secondary-red); color: var(--secondary); background: color-mix(in srgb, var(--secondary-red) 10%, transparent)">
+				{error}
+			</div>
 		{/if}
 
 		<div class="flex flex-col gap-1.5">
-			<label for="name" class="text-sm font-medium text-muted">Name *</label>
+			<label for="name" class="label-mono">NAME *</label>
 			<input id="name" type="text" class="input" required bind:value={name} />
 		</div>
 
 		<div class="flex flex-col gap-1.5">
-			<label for="description" class="text-sm font-medium text-muted">Description</label>
-			<textarea id="description" class="input min-h-24 resize-y" bind:value={description}></textarea>
+			<label for="description" class="label-mono">DESCRIPTION</label>
+			<textarea id="description" class="input min-h-24" bind:value={description}></textarea>
 		</div>
 
 		<div class="flex flex-col gap-1.5">
-			<label for="continuity" class="text-sm font-medium text-muted">Continuity ID *</label>
+			<label for="continuity" class="label-mono">CONTINUITY ID *</label>
 			<input id="continuity" type="text" class="input" required bind:value={continuityId} />
 		</div>
 
 		<div class="flex flex-col gap-1.5">
-			<label for="factions" class="text-sm font-medium text-muted">Factions (comma-separated)</label>
-			<input id="factions" type="text" class="input" placeholder="Autobot, Decepticon" bind:value={factions} />
+			<label for="factions" class="label-mono">FACTIONS</label>
+			<input id="factions" type="text" class="input" placeholder="AUTOBOT, DECEPTICON" bind:value={factions} />
+			<p class="serial-tag">COMMA-SEPARATED</p>
 		</div>
 
-		<hr class="border-white/5" />
+		<hr style="border-color: color-mix(in srgb, var(--outline) 20%, transparent)" />
 
-		<h3 class="font-heading text-lg font-semibold text-white">Custom Fields</h3>
+		<h3 class="font-heading text-lg font-semibold text-white">CUSTOM FIELDS</h3>
 
 		{#each fields as field}
 			<DynamicField {field} value={customValues[field.key]} onchange={handleCustom} />
 		{/each}
 
 		<button type="submit" class="btn btn-primary w-full" disabled={saving}>
-			{saving ? "Saving..." : "Save Changes"}
+			{saving ? "PROCESSING..." : "SAVE CHANGES"}
 		</button>
 	</form>
 </div>

@@ -1,19 +1,28 @@
 {
   "faviconPath": "/favicon.png",
   "theme": {
-    "primaryColor": "#FF6A00",
-    "accentColor": "#00D4FF",
-    "backgroundColor": "#0A0B0D",
-    "surfaceColor": "#141519",
-    "cardColor": "#1C1D24",
-    "textColor": "#F0F0F0",
-    "mutedTextColor": "#8A8A9A",
+    "primaryColor": "#b5c4ff",
+    "primaryOnColor": "#00287d",
+    "accentColor": "#00dbe9",
+    "secondaryColor": "#ffb4a8",
+    "secondaryRedColor": "#ce0301",
+    "backgroundColor": "#121414",
+    "surfaceColor": "#1e2020",
+    "surfaceLowColor": "#1a1c1c",
+    "cardColor": "#1a1c1c",
+    "textColor": "#e3e2e2",
+    "mutedTextColor": "#8e909e",
+    "outlineColor": "#8e909e",
+    "outlineVariantColor": "#444653",
     "fontFamily": "Inter, sans-serif",
-    "headingFont": "Orbitron, sans-serif"
+    "headingFont": "Space Grotesk, sans-serif",
+    "monoFont": "JetBrains Mono, monospace"
   },
   "pages": [
-    { "id": "dashboard", "label": "Dashboard", "enabled": true },
-    { "id": "entries", "label": "Entries", "enabled": true },
-    { "id": "admin", "label": "Admin", "enabled": true }
+    { "id": "dashboard", "label": "DASHBOARD", "enabled": true },
+    { "id": "entries", "label": "ENTRIES", "enabled": true },
+    { "id": "factions", "label": "FACTIONS", "enabled": true },
+    { "id": "continuities", "label": "CONTINUITIES", "enabled": true },
+    { "id": "admin", "label": "ADMIN", "enabled": true }
   ]
 }

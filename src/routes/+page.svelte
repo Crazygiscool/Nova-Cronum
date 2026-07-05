@@ -16,22 +16,22 @@
 	);
 </script>
 
-<div class="mx-auto max-w-6xl">
+<div class="mx-auto" style="max-width: 1200px">
 	<div class="mb-8">
-		<h2 class="font-heading text-3xl font-bold text-white">Matrix Registry</h2>
-		<p class="mt-1 text-muted">Character database overview</p>
+		<h2 class="font-heading text-3xl font-bold tracking-tight text-white">MATRIX REGISTRY</h2>
+		<p class="serial-tag mt-2">CHARACTER DATABASE OVERVIEW</p>
 	</div>
 
 	<div class="mb-6 flex flex-wrap items-center gap-4">
 		<input
 			type="text"
 			class="input w-72"
-			placeholder="Search entries..."
+			placeholder="SEARCH ENTRIES..."
 			bind:value={search}
 		/>
 
 		<select class="input w-48" bind:value={selectedFaction}>
-			<option value="">All Factions</option>
+			<option value="">ALL FACTIONS</option>
 			{#each data.factions as f}
 				<option value={f}>{f}</option>
 			{/each}
@@ -39,7 +39,7 @@
 	</div>
 
 	{#if filtered.length === 0}
-		<p class="text-muted">No entries found.</p>
+		<p class="serial-tag">NO ENTRIES FOUND.</p>
 	{:else}
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as entry (entry.id)}

@@ -13,7 +13,7 @@
 </script>
 
 <div class="flex flex-col gap-1.5">
-	<label for="field-{field.key}" class="text-sm font-medium text-muted">{field.label}</label>
+	<label for="field-{field.key}" class="label-mono">{field.label}</label>
 
 	{#if field.type === "string"}
 		<input
@@ -34,15 +34,16 @@
 			oninput={(e) => onchange(field.key, Number((e.target as HTMLInputElement).value))}
 		/>
 	{:else if field.type === "boolean"}
-		<label class="flex cursor-pointer items-center gap-2">
+		<label class="flex cursor-pointer items-center gap-2" style="color: var(--muted)">
 			<input
 				id="field-{field.key}"
 				type="checkbox"
-				class="h-4 w-4 rounded border-white/10 bg-surface accent-primary"
+				class="h-4 w-4 accent-accent"
+				style="border: 1px solid var(--outline); background: color-mix(in srgb, var(--accent) 5%, var(--bg))"
 				checked={(value as boolean) ?? false}
 				onchange={(e) => onchange(field.key, (e.target as HTMLInputElement).checked)}
 			/>
-			<span class="text-sm text-muted">Enabled</span>
+			<span class="text-sm">ACTIVE</span>
 		</label>
 	{:else if field.type === "date"}
 		<input

@@ -6,22 +6,23 @@
 	let keys = $state($state.snapshot(data.keys));
 </script>
 
-<div class="mx-auto max-w-4xl">
+<div class="mx-auto" style="max-width: 1000px">
 	<div class="mb-8">
-		<h2 class="font-heading text-3xl font-bold text-white">Admin Panel</h2>
-		<p class="mt-1 text-muted">Manage entries and API keys</p>
+		<h2 class="font-heading text-3xl font-bold tracking-tight text-white">ADMIN PANEL</h2>
+		<p class="serial-tag mt-2">MANAGE ENTRIES &amp; API KEYS</p>
 	</div>
 
-	<div class="mb-8">
-		<div class="card p-6">
-			<h3 class="mb-2 font-heading text-lg font-semibold text-white">Database Stats</h3>
-			<p class="text-muted">{data.entryCount} entries</p>
-			<a href="/admin/entries/new" class="btn btn-primary mt-4 inline-block">New Entry</a>
+	<div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+		<div class="panel p-6">
+			<p class="label-mono">DATABASE STATS</p>
+			<p class="mt-2 font-heading text-4xl font-bold text-primary">{data.entryCount}</p>
+			<p class="serial-tag">ENTRIES</p>
+			<a href="/admin/entries/new" class="btn btn-primary mt-4">NEW ENTRY</a>
 		</div>
 	</div>
 
-	<div class="card p-6">
-		<h3 class="mb-4 font-heading text-lg font-semibold text-white">API Keys</h3>
+	<div class="panel p-6">
+		<h3 class="font-heading mb-4 text-lg font-semibold text-white">API KEYS</h3>
 
 		<form
 			class="mb-6 flex gap-3"
@@ -42,41 +43,41 @@
 					keys = [...keys, { id: key.id, label: key.label, createdAt: key.createdAt, lastUsedAt: null }];
 					newLabel = "";
 				} else {
-					alert("Failed to create key. Check your admin key.");
+					alert("FAILED TO CREATE KEY. CHECK ADMIN KEY.");
 				}
 			}}
 		>
-			<input type="text" class="input flex-1" placeholder="Key label..." bind:value={newLabel} />
-			<button type="submit" class="btn btn-accent">Generate</button>
+			<input type="text" class="input flex-1" placeholder="KEY LABEL..." bind:value={newLabel} />
+			<button type="submit" class="btn btn-accent btn-sm">GENERATE</button>
 		</form>
 
 		{#if newKey}
-			<div class="mb-6 rounded-lg border border-accent/30 bg-accent/5 p-4">
-				<p class="text-sm font-medium text-accent">New API Key (copy now — won't be shown again):</p>
+			<div class="mb-6 p-4" style="border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent)">
+				<p class="label-mono" style="color: var(--accent)">NEW API KEY — COPY NOW:</p>
 				<code class="mt-1 block break-all font-mono text-sm text-white">{newKey}</code>
 			</div>
 		{/if}
 
 		<table class="w-full text-left text-sm">
 			<thead>
-				<tr class="border-b border-white/5 text-muted">
-					<th class="pb-2 font-medium">Label</th>
-					<th class="pb-2 font-medium">Created</th>
-					<th class="pb-2 font-medium">Last Used</th>
-					<th class="pb-2"></th>
+				<tr class="readout-row">
+					<th class="readout-label py-2">LABEL</th>
+					<th class="readout-label py-2">CREATED</th>
+					<th class="readout-label py-2">LAST USED</th>
+					<th class="py-2"></th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each keys as k (k.id)}
-					<tr class="border-b border-white/5">
-						<td class="py-2 text-white">{k.label}</td>
-						<td class="py-2 text-muted">{new Date(k.createdAt).toLocaleDateString()}</td>
-						<td class="py-2 text-muted">{k.lastUsedAt ? new Date(k.lastUsedAt).toLocaleDateString() : "Never"}</td>
+					<tr class="readout-row">
+						<td class="readout-value py-2 text-left">{k.label}</td>
+						<td class="py-2" style="color: var(--muted)">{new Date(k.createdAt).toLocaleDateString()}</td>
+						<td class="py-2" style="color: var(--muted)">{k.lastUsedAt ? new Date(k.lastUsedAt).toLocaleDateString() : "NEVER"}</td>
 						<td class="py-2">
 							<button
-								class="text-sm text-red-400 hover:text-red-300"
+								class="btn btn-red btn-sm"
 								onclick={async () => {
-									if (!confirm("Delete this key?")) return;
+									if (!confirm("DELETE THIS KEY?")) return;
 									const res = await fetch(`/api/v1/admin/keys/${k.id}`, {
 										method: "DELETE",
 										headers: { authorization: `Bearer ${localStorage.getItem("admin_key")}` },
@@ -86,7 +87,7 @@
 									}
 								}}
 							>
-								Delete
+								DELETE
 							</button>
 						</td>
 					</tr>
