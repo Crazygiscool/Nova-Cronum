@@ -1,0 +1,19 @@
+{
+  "databaseName": "Nova-Cronum",
+  "entryFormat": {
+    "requiredFields": ["name", "description", "continuityId", "factions"],
+    "customFields": [
+      { "key": "sparkId", "type": "string", "label": "Spark Signature" },
+      { "key": "primaryFunction", "type": "string", "label": "Designated Function" },
+      { "key": "altMode", "type": "string", "label": "Alternate Mode" },
+      { "key": "motto", "type": "string", "label": "Motto" },
+      { "key": "colorScheme", "type": "string", "label": "Color Scheme" },
+      { "key": "firepower", "type": "number", "label": "Firepower Rating" },
+      { "key": "strength", "type": "number", "label": "Strength" },
+      { "key": "intelligence", "type": "number", "label": "Intelligence" },
+      { "key": "speed", "type": "number", "label": "Speed" },
+      { "key": "isOnline", "type": "boolean", "label": "Active Status" },
+      { "key": "activated", "type": "date", "label": "Activation Date" }
+    ]
+  }
+}
