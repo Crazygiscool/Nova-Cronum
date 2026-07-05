@@ -27,12 +27,8 @@
 	body {
 		margin: 0;
 		font-family: var(--body-font);
-		background-color: var(--bg);
-		background-image:
-			linear-gradient(rgba(0, 219, 233, 0.02) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(0, 219, 233, 0.02) 1px, transparent 1px);
-		background-size: 60px 60px;
 		color: var(--text);
+		background: #121414;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	}

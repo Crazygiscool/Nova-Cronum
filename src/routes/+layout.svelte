@@ -22,6 +22,12 @@
 		--heading-font: ${t.headingFont};
 		--body-font: ${t.fontFamily};
 		--mono-font: ${t.monoFont};
+		background-color: ${t.backgroundColor};
+		background-image:
+			linear-gradient(rgba(0, 219, 233, 0.02) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(0, 219, 233, 0.02) 1px, transparent 1px);
+		background-size: 60px 60px;
+		min-height: 100vh;
 	` as string);
 </script>
 
