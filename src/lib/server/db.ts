@@ -1,6 +1,8 @@
 import { MongoClient, type Db } from "mongodb";
-import { CAPRepository, type ICAPBaseDocument } from "@crazygiscool/cap";
+import { CAPRepository, type ICAPBaseDocument, type CrawlSourceRecord } from "@crazygiscool/cap";
 import { getSettings } from "./settings";
+
+export type { CrawlSourceRecord };
 
 export interface CharacterEntry extends ICAPBaseDocument {
 	sparkId?: string;
@@ -14,6 +16,7 @@ export interface CharacterEntry extends ICAPBaseDocument {
 	speed?: number;
 	isOnline?: boolean;
 	activated?: string;
+	sources?: CrawlSourceRecord[];
 }
 
 export class CharacterRepo extends CAPRepository<CharacterEntry> {

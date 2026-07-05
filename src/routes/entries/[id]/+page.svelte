@@ -51,5 +51,23 @@
 				{/if}
 			{/each}
 		</div>
+
+		{#if entry.sources && entry.sources.length > 0}
+			<div class="mt-6 border-t pt-6" style="border-color: color-mix(in srgb, var(--outline) 20%, transparent)">
+				<h3 class="label-mono mb-3">SOURCES</h3>
+				<div class="flex flex-col gap-2">
+					{#each entry.sources as src}
+						<a href={src.url} target="_blank" rel="noopener noreferrer"
+							class="flex items-center gap-2 rounded px-3 py-2 text-sm transition-colors hover:bg-white/5"
+							style="border: 1px solid color-mix(in srgb, var(--outline) 30%, transparent)"
+						>
+							<span style="color: var(--primary)">→</span>
+							<span class="font-mono text-xs uppercase tracking-wider" style="color: var(--accent)">{src.wiki}</span>
+							<span style="color: var(--muted)">{src.url}</span>
+						</a>
+					{/each}
+				</div>
+			</div>
+		{/if}
 	</div>
 </div>

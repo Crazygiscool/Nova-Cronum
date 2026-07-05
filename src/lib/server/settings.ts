@@ -1,4 +1,4 @@
-import { CAPSettingsSchema, type CustomFieldConfig } from "@crazygiscool/cap";
+import { CAPSettingsSchema, type CustomFieldConfig, type CrawlSourceConfig } from "@crazygiscool/cap";
 import rawSettings from "../../../settings.json" with { type: "json" };
 import themeConfig from "../../../theme.config.json" with { type: "json" };
 
@@ -38,4 +38,12 @@ export function getTheme(): ThemeConfig {
 
 export function getCustomFields(): CustomFieldConfig[] {
 	return _settings.entryFormat.customFields ?? [];
+}
+
+export function getCrawlSources(): CrawlSourceConfig[] {
+	return _settings.crawling?.sources ?? [];
+}
+
+export function getMergeRules(): Record<string, boolean> {
+	return _settings.crawling?.mergeRules ?? {};
 }

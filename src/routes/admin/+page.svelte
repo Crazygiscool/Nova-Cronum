@@ -102,7 +102,10 @@
 			<p class="label-mono">DATABASE STATS</p>
 			<p class="mt-2 font-heading text-4xl font-bold text-primary">{data.entryCount}</p>
 			<p class="serial-tag">ENTRIES</p>
-			<a href="/admin/entries/new" class="btn btn-primary mt-4">NEW ENTRY</a>
+			<div class="mt-4 flex gap-2">
+				<a href="/admin/entries/new" class="btn btn-primary btn-sm">NEW ENTRY</a>
+				<a href="/admin/crawl" class="btn btn-accent btn-sm">WIKI CRAWLER</a>
+			</div>
 		</div>
 	</div>
 

@@ -15,5 +15,83 @@
       { "key": "isOnline", "type": "boolean", "label": "Active Status" },
       { "key": "activated", "type": "date", "label": "Activation Date" }
     ]
+  },
+  "crawling": {
+    "sources": [
+      {
+        "id": "tfwiki",
+        "label": "TFWiki",
+        "baseUrl": "https://tfwiki.net",
+        "apiUrl": "https://tfwiki.net/api.php",
+        "parser": "tfwiki",
+        "categories": [
+          { "id": "autobots", "label": "Autobots", "path": "Category:Autobots" },
+          { "id": "decepticons", "label": "Decepticons", "path": "Category:Decepticons" },
+          { "id": "maximals", "label": "Maximals", "path": "Category:Maximals" },
+          { "id": "predacons", "label": "Predacons", "path": "Category:Predacons" },
+          { "id": "minicons", "label": "Mini-Cons", "path": "Category:Mini-Cons" },
+          { "id": "humans", "label": "Humans", "path": "Category:Humans" }
+        ],
+        "fieldMapping": {
+          "Affiliation": { "target": "factions", "type": "string-array" },
+          "Function": { "target": "primaryFunction", "type": "string" },
+          "Motto": { "target": "motto", "type": "string" },
+          "Alt Mode": { "target": "altMode", "type": "string" },
+          "Color Scheme": { "target": "colorScheme", "type": "string" },
+          "Firepower": { "target": "firepower", "type": "number" },
+          "Strength": { "target": "strength", "type": "number" },
+          "Intelligence": { "target": "intelligence", "type": "number" },
+          "Speed": { "target": "speed", "type": "number" }
+        }
+      },
+      {
+        "id": "wikipedia",
+        "label": "Wikipedia",
+        "baseUrl": "https://en.wikipedia.org",
+        "apiUrl": "https://en.wikipedia.org/w/api.php",
+        "parser": "wikipedia",
+        "categories": [
+          { "id": "autobots", "label": "Autobots", "path": "Category:Autobots" },
+          { "id": "decepticons", "label": "Decepticons", "path": "Category:Decepticons" },
+          { "id": "characters", "label": "Transformers characters", "path": "Category:Transformers_characters" }
+        ],
+        "fieldMapping": {
+          "Affiliation": { "target": "factions", "type": "string-array" },
+          "Function": { "target": "primaryFunction", "type": "string" },
+          "Motto": { "target": "motto", "type": "string" },
+          "Series": { "target": "continuityId", "type": "string" }
+        }
+      },
+      {
+        "id": "fandom",
+        "label": "Transformers Fandom",
+        "baseUrl": "https://transformers.fandom.com",
+        "apiUrl": "https://transformers.fandom.com/api.php",
+        "parser": "fandom",
+        "categories": [
+          { "id": "autobots", "label": "Autobots", "path": "Category:Autobots" },
+          { "id": "decepticons", "label": "Decepticons", "path": "Category:Decepticons" },
+          { "id": "maximals", "label": "Maximals", "path": "Category:Maximals" },
+          { "id": "predacons", "label": "Predacons", "path": "Category:Predacons" }
+        ],
+        "fieldMapping": {
+          "Affiliation": { "target": "factions", "type": "string-array" },
+          "Function": { "target": "primaryFunction", "type": "string" },
+          "Motto": { "target": "motto", "type": "string" }
+        }
+      }
+    ],
+    "mergeRules": {
+      "sources-merge": true,
+      "longer-description": true,
+      "factions-union": true,
+      "fill-empty-fields": true,
+      "existing-wins": false,
+      "crawled-wins": false,
+      "continuity-existing": true,
+      "bump-updated-at": true,
+      "skip-if-no-name": true,
+      "skip-if-source-exists": true
+    }
   }
 }
