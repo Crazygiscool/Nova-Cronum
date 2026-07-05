@@ -56,7 +56,31 @@ export async function deleteApiKey(id: string): Promise<boolean> {
 	return result.deletedCount > 0;
 }
 
+import { validateSession } from "./admin-auth";
+
 export function isAdminRequest(request: Request): boolean {
 	const auth = request.headers.get("authorization") ?? "";
 	return auth === `Bearer ${process.env.ADMIN_KEY}`;
+}
+
+export function isAdminRequestFromEvent(event: {
+	request: Request;
+	cookies: { get: (name: string) => string | undefined };
+}): boolean {
+	const auth = event.request.headers.get("authorization") ?? "";
+	if (auth === `Bearer ${process.env.ADMIN_KEY}`) return true;
+	return false; // session check handled upstream in the endpoint
+}
+
+export async function isAdminFromEvent(event: {
+	request: Request;
+	cookies: { get: (name: string) => string | undefined };
+}): Promise<boolean> {
+	const auth = event.request.headers.get("authorization") ?? "";
+	if (auth === `Bearer ${process.env.ADMIN_KEY}`) return true;
+
+	const sessionId = event.cookies.get("admin_session");
+	if (sessionId && (await validateSession(sessionId))) return true;
+
+	return false;
 }

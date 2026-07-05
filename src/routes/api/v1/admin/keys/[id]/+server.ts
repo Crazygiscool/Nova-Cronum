@@ -1,12 +1,12 @@
 import { json, type RequestEvent } from "@sveltejs/kit";
-import { deleteApiKey, isAdminRequest } from "$lib/server/auth";
+import { deleteApiKey, isAdminFromEvent } from "$lib/server/auth";
 
-export async function DELETE({ request, params }: RequestEvent) {
-	if (!isAdminRequest(request)) {
+export async function DELETE(event: RequestEvent) {
+	if (!(await isAdminFromEvent(event))) {
 		return json({ error: "Unauthorized" }, { status: 401 });
 	}
 
-	const id = params.id;
+	const id = event.params.id;
 	if (!id) return json({ error: "Not found" }, { status: 404 });
 	const deleted = await deleteApiKey(id);
 	if (!deleted) {

@@ -1,16 +1,101 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	let { data }: { data: { entryCount: number; keys: { id: string; label: string; createdAt: Date; lastUsedAt: Date | null }[] } } = $props();
 
 	let newLabel = $state("");
 	let newKey = $state("");
 	let keys = $state($state.snapshot(data.keys));
+
+	// Change password
+	let showPasswordForm = $state(false);
+	let oldPassword = $state("");
+	let newPassword = $state("");
+	let confirmPassword = $state("");
+	let passwordError = $state("");
+	let passwordOk = $state(false);
+
+	async function handleLogout() {
+		await fetch("/admin/api/logout", { method: "POST" });
+		goto("/admin/login");
+	}
+
+	async function handlePasswordChange(e: SubmitEvent) {
+		e.preventDefault();
+		passwordError = "";
+		passwordOk = false;
+
+		if (newPassword !== confirmPassword) {
+			passwordError = "Passwords do not match";
+			return;
+		}
+		if (newPassword.length < 8) {
+			passwordError = "New password must be at least 8 characters";
+			return;
+		}
+
+		const res = await fetch("/admin/api/password", {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ oldPassword, newPassword }),
+		});
+
+		if (res.ok) {
+			passwordOk = true;
+			oldPassword = "";
+			newPassword = "";
+			confirmPassword = "";
+			showPasswordForm = false;
+		} else {
+			const data = await res.json();
+			passwordError = data.error || "Failed to change password";
+		}
+	}
 </script>
 
 <div class="mx-auto" style="max-width: 1000px">
-	<div class="mb-8">
-		<h2 class="font-heading text-3xl font-bold tracking-tight text-white">ADMIN PANEL</h2>
-		<p class="serial-tag mt-2">MANAGE ENTRIES &amp; API KEYS</p>
+	<div class="mb-8 flex items-start justify-between">
+		<div>
+			<h2 class="font-heading text-3xl font-bold tracking-tight text-white">ADMIN PANEL</h2>
+			<p class="serial-tag mt-2">MANAGE ENTRIES &amp; API KEYS</p>
+		</div>
+		<div class="flex gap-3">
+			<button class="btn btn-sm" onclick={() => (showPasswordForm = !showPasswordForm)}>
+				CHANGE PASSWORD
+			</button>
+			<button class="btn btn-red btn-sm" onclick={handleLogout}>LOGOUT</button>
+		</div>
 	</div>
+
+	{#if showPasswordForm}
+		<div class="panel mb-8 p-6">
+			<h3 class="font-heading mb-4 text-lg font-semibold text-white">CHANGE PASSWORD</h3>
+			{#if passwordOk}
+				<div class="mb-4 p-3 text-sm" style="border: 1px solid var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent)">
+					PASSWORD CHANGED SUCCESSFULLY
+				</div>
+			{/if}
+			{#if passwordError}
+				<div class="mb-4 p-3 text-sm" style="border: 1px solid var(--secondary-red); color: var(--secondary); background: color-mix(in srgb, var(--secondary-red) 10%, transparent)">
+					{passwordError}
+				</div>
+			{/if}
+			<form class="flex flex-col gap-3" onsubmit={handlePasswordChange}>
+				<div class="flex flex-col gap-1.5">
+					<label for="oldpw" class="label-mono">CURRENT PASSWORD</label>
+					<input id="oldpw" type="password" class="input" required bind:value={oldPassword} />
+				</div>
+				<div class="flex flex-col gap-1.5">
+					<label for="newpw" class="label-mono">NEW PASSWORD</label>
+					<input id="newpw" type="password" class="input" required bind:value={newPassword} />
+				</div>
+				<div class="flex flex-col gap-1.5">
+					<label for="confirmpw" class="label-mono">CONFIRM NEW PASSWORD</label>
+					<input id="confirmpw" type="password" class="input" required bind:value={confirmPassword} />
+				</div>
+				<button type="submit" class="btn btn-primary w-full">UPDATE PASSWORD</button>
+			</form>
+		</div>
+	{/if}
 
 	<div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
 		<div class="panel p-6">
@@ -31,10 +116,7 @@
 				if (!newLabel) return;
 				const res = await fetch("/api/v1/admin/keys", {
 					method: "POST",
-					headers: {
-						"content-type": "application/json",
-						authorization: `Bearer ${localStorage.getItem("admin_key")}`,
-					},
+					headers: { "content-type": "application/json" },
 					body: JSON.stringify({ label: newLabel }),
 				});
 				if (res.ok) {
@@ -78,10 +160,7 @@
 								class="btn btn-red btn-sm"
 								onclick={async () => {
 									if (!confirm("DELETE THIS KEY?")) return;
-									const res = await fetch(`/api/v1/admin/keys/${k.id}`, {
-										method: "DELETE",
-										headers: { authorization: `Bearer ${localStorage.getItem("admin_key")}` },
-									});
+									const res = await fetch(`/api/v1/admin/keys/${k.id}`, { method: "DELETE" });
 									if (res.ok) {
 										keys = keys.filter((x) => x.id !== k.id);
 									}

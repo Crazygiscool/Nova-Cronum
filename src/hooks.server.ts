@@ -5,6 +5,13 @@ const WRITE_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 export const handle: Handle = async ({ event, resolve }) => {
 	if (WRITE_METHODS.has(event.request.method)) {
+		const url = new URL(event.request.url);
+
+		// Admin routes manage their own auth (session or env key)
+		if (url.pathname.startsWith("/api/v1/admin/")) {
+			return resolve(event);
+		}
+
 		const authHeader = event.request.headers.get("authorization") ?? "";
 		const token = authHeader.replace(/^Bearer\s+/i, "");
 
