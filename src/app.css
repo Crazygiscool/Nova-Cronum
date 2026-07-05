@@ -28,6 +28,10 @@
 		margin: 0;
 		font-family: var(--body-font);
 		background-color: var(--bg);
+		background-image:
+			linear-gradient(rgba(0, 219, 233, 0.02) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(0, 219, 233, 0.02) 1px, transparent 1px);
+		background-size: 60px 60px;
 		color: var(--text);
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
@@ -59,17 +63,33 @@
 @layer components {
 	/* --- Panels & Cards --- */
 	.panel {
-		background: var(--surface);
+		background:
+			repeating-linear-gradient(
+				45deg,
+				transparent,
+				transparent 2px,
+				color-mix(in srgb, var(--accent) 1%, transparent) 2px,
+				color-mix(in srgb, var(--accent) 1%, transparent) 3px
+			),
+			var(--surface);
 		border: 1px solid var(--outline);
 		transition: border-color 0.2s, box-shadow 0.2s;
 	}
 
 	.panel:hover {
 		border-color: var(--primary);
+		background:
+			repeating-linear-gradient(
+				45deg,
+				transparent,
+				transparent 2px,
+				color-mix(in srgb, var(--accent) 2%, transparent) 2px,
+				color-mix(in srgb, var(--accent) 2%, transparent) 3px
+			),
+			var(--surface);
 	}
 
 	.panel-glow {
-		border: 1px solid var(--outline);
 		box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 0%, transparent);
 		transition: border-color 0.2s, box-shadow 0.2s;
 	}
@@ -110,18 +130,17 @@
 		width: 3px;
 		background: transparent;
 		transition: all 0.25s;
-		border-radius: 0;
 	}
 
 	.nav-item:hover {
 		color: var(--text);
-		background: color-mix(in srgb, var(--accent) 4%, transparent);
+		background: color-mix(in srgb, var(--accent) 4%, var(--surface-low));
 		border-color: color-mix(in srgb, var(--outline) 40%, transparent);
 	}
 
 	.nav-item-active {
 		color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 6%, var(--surface-low));
+		background: color-mix(in srgb, var(--accent) 8%, var(--surface-low));
 		border-color: var(--outline);
 		border-right-color: var(--bg);
 		translate: 8px 0;
@@ -135,7 +154,15 @@
 
 	/* --- Sidebar --- */
 	.sidebar {
-		background: var(--surface);
+		background:
+			repeating-linear-gradient(
+				45deg,
+				transparent,
+				transparent 2px,
+				color-mix(in srgb, var(--accent) 0.8%, transparent) 2px,
+				color-mix(in srgb, var(--accent) 0.8%, transparent) 3px
+			),
+			var(--surface-low);
 		border-right: 1px solid var(--outline);
 	}
 
@@ -182,8 +209,8 @@
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		cursor: pointer;
-		transition: opacity 0.2s, transform 0.1s;
-		border: none;
+		transition: opacity 0.2s, transform 0.1s, background 0.2s;
+		border: 1px solid transparent;
 		background: transparent;
 		color: var(--text);
 		clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
@@ -194,45 +221,48 @@
 	}
 
 	.btn-primary {
-		background: var(--primary);
-		color: var(--primary-on);
-		border-bottom: 2px solid var(--accent);
+		background: color-mix(in srgb, var(--primary) 15%, var(--surface-low));
+		color: var(--primary);
+		border-color: var(--primary);
+		border-bottom-width: 2px;
 	}
 
 	.btn-primary:hover {
-		opacity: 0.9;
+		background: color-mix(in srgb, var(--primary) 25%, var(--surface-low));
 	}
 
 	.btn-accent {
-		background: var(--accent);
-		color: #000;
-		border-bottom: 2px solid var(--primary);
+		background: color-mix(in srgb, var(--accent) 15%, var(--surface-low));
+		color: var(--accent);
+		border-color: var(--accent);
+		border-bottom-width: 2px;
 	}
 
 	.btn-accent:hover {
-		opacity: 0.9;
+		background: color-mix(in srgb, var(--accent) 25%, var(--surface-low));
 	}
 
 	.btn-red {
-		background: var(--secondary-red);
-		color: #fff;
-		border-bottom: 2px solid var(--secondary);
+		background: color-mix(in srgb, var(--secondary-red) 20%, var(--surface-low));
+		color: var(--secondary);
+		border-color: var(--secondary-red);
+		border-bottom-width: 2px;
 	}
 
 	.btn-red:hover {
-		opacity: 0.9;
+		background: color-mix(in srgb, var(--secondary-red) 35%, var(--surface-low));
 	}
 
 	.btn-ghost {
 		background: transparent;
-		border: 1px solid var(--outline);
+		border: 1px solid var(--outline-variant);
 		color: var(--muted);
-		clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
 	}
 
 	.btn-ghost:hover {
 		border-color: var(--accent);
 		color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 5%, transparent);
 	}
 
 	.btn-sm {
@@ -242,7 +272,15 @@
 
 	/* --- Inputs (Terminal-style) --- */
 	.input {
-		background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+		background:
+			repeating-linear-gradient(
+				45deg,
+				transparent,
+				transparent 2px,
+				color-mix(in srgb, var(--accent) 1.5%, transparent) 2px,
+				color-mix(in srgb, var(--accent) 1.5%, transparent) 3px
+			),
+			color-mix(in srgb, var(--accent) 5%, var(--bg));
 		border: 1px solid var(--outline);
 		color: var(--text);
 		font-family: var(--mono-font);
