@@ -6,9 +6,15 @@
 		categories: { id: string; label: string; path: string }[];
 	}
 
-	interface DiscoverPage {
+	interface DiscoverResult {
 		sourceId: string;
 		title: string;
+	}
+
+	interface PerCategoryResult {
+		category: string;
+		count: number;
+		error?: string;
 	}
 
 	const CHUNK_SIZE = 5;
@@ -18,16 +24,20 @@
 
 	let crawling = $state(false);
 	let discoveredCount = $state(0);
-	let scrapedCount = $state(0);
 	let totalCount = $state(0);
+	let scraperrorsCount = $state(0);
+	let sentCount = $state(0);
 	let newCount = $state(0);
 	let mergedCount = $state(0);
 	let skippedCount = $state(0);
+	let importErrors = $state(0);
 	let errorLog = $state<{ title: string; source: string; error: string }[]>([]);
 	let done = $state(false);
 	let stage = $state<"idle" | "discovering" | "scraping" | "done">("idle");
 
-	let pages: DiscoverPage[] = [];
+	let perSourceDiscover = $state<Record<string, PerCategoryResult[]>>({});
+
+	let pages: DiscoverResult[] = [];
 
 	$effect(() => {
 		fetch("/admin/api/crawl/sources")
@@ -43,11 +53,13 @@
 		crawling = true;
 		done = false;
 		discoveredCount = 0;
-		scrapedCount = 0;
 		totalCount = 0;
+		scraperrorsCount = 0;
+		sentCount = 0;
 		newCount = 0;
 		mergedCount = 0;
 		skippedCount = 0;
+		importErrors = 0;
 		errorLog = [];
 		pages = [];
 
@@ -70,12 +82,21 @@
 		pages = discData.pages;
 		discoveredCount = pages.length;
 		totalCount = pages.length;
+		perSourceDiscover = discData.perSource ?? {};
 		for (const e of discData.errors ?? []) {
 			errorLog = [...errorLog, { title: `[${e.sourceId}] ${e.category}`, source: e.sourceId, error: e.error }];
 		}
 
+		if (pages.length === 0) {
+			crawling = false;
+			stage = "done";
+			done = true;
+			return;
+		}
+
 		// Scrape + Import in chunks
 		stage = "scraping";
+		let processed = 0;
 		for (let i = 0; i < pages.length; i += CHUNK_SIZE) {
 			const chunk = pages.slice(i, i + CHUNK_SIZE);
 			const grouped = new Map<string, string[]>();
@@ -98,15 +119,15 @@
 						for (const e of scrapeData.errors) {
 							errorLog = [...errorLog, { title: e.title, source: sourceId, error: e.error }];
 						}
+						scraperrorsCount += scrapeData.errors.length;
 					}
 				} catch (err: unknown) {
 					for (const t of titles) {
 						errorLog = [...errorLog, { title: t, source: sourceId, error: "Fetch failed" }];
 					}
+					scraperrorsCount += titles.length;
 				}
 			}
-
-			scrapedCount = Math.min(scrapedCount + allEntries.length + (grouped.size > 0 ? 0 : 0), totalCount);
 
 			if (allEntries.length > 0) {
 				try {
@@ -123,6 +144,7 @@
 							else if (r.action === "skipped") skippedCount++;
 							else if (r.action === "error") {
 								errorLog = [...errorLog, { title: r.name, source: "", error: r.error || "Import failed" }];
+								importErrors++;
 							}
 						}
 					}
@@ -130,10 +152,12 @@
 					for (const e of allEntries) {
 						errorLog = [...errorLog, { title: e.name, source: "", error: "Import request failed" }];
 					}
+					importErrors += allEntries.length;
 				}
 			}
 
-			scrapedCount = Math.min(i + CHUNK_SIZE, totalCount);
+			processed += chunk.length;
+			sentCount = processed;
 
 			// Yield to let the UI paint
 			await new Promise((r) => setTimeout(r, 0));
@@ -201,8 +225,8 @@
 					<p class="mt-1 font-heading text-2xl font-bold" style="color: var(--muted)">{discoveredCount}</p>
 				</div>
 				<div class="rounded p-3" style="background: color-mix(in srgb, var(--surface) 50%, transparent)">
-					<p class="label-mono">SCRAPED</p>
-					<p class="mt-1 font-heading text-2xl font-bold text-white">{scrapedCount}<span class="text-sm" style="color: var(--muted)">/{totalCount}</span></p>
+					<p class="label-mono">PAGES SENT</p>
+					<p class="mt-1 font-heading text-2xl font-bold text-white">{sentCount}<span class="text-sm" style="color: var(--muted)">/{totalCount}</span></p>
 				</div>
 				<div class="rounded p-3" style="background: color-mix(in srgb, var(--surface) 50%, transparent)">
 					<p class="label-mono">NEW</p>
@@ -220,10 +244,38 @@
 				<div class="mb-2 h-2 w-full overflow-hidden rounded-full" style="background: color-mix(in srgb, var(--outline) 20%, transparent)">
 					<div
 						class="h-full rounded-full transition-all"
-						style="width: {totalCount > 0 ? (scrapedCount / totalCount) * 100 : 0}%; background: var(--accent)"
+						style="width: {totalCount > 0 ? (sentCount / totalCount) * 100 : 0}%; background: var(--accent)"
 					></div>
 				</div>
-				<p class="serial-tag">SCRAPING & IMPORTING: {scrapedCount} / {totalCount}</p>
+				<p class="serial-tag">SCRAPING & IMPORTING: {sentCount} / {totalCount}</p>
+			{/if}
+
+			{#if stage === "scraping" || stage === "done"}
+				<div class="mt-3 grid grid-cols-2 gap-2 text-sm md:grid-cols-3">
+					{#each Object.entries(perSourceDiscover) as [sourceId, cats]}
+						{@const sourceLabel = sources.find((s) => s.id === sourceId)?.label ?? sourceId}
+						{#each cats as c}
+							<div class="rounded px-2 py-1" class:opacity-50={c.count === 0 && !c.error} style="background: color-mix(in srgb, var(--surface) 30%, transparent)">
+								<span class="font-bold text-white">{sourceLabel}</span>
+								<span class="serial-tag ms-1">{c.category.replace("Category:", "")}</span>
+								<br>
+								<span style="color: var(--muted)">
+									{#if c.error}
+										<span style="color: var(--secondary)">ERR: {c.error}</span>
+									{:else}
+										{c.count} pages
+									{/if}
+								</span>
+							</div>
+						{/each}
+					{/each}
+				</div>
+			{/if}
+
+			{#if scraperrorsCount > 0}
+				<div class="mt-3" style="color: var(--secondary)">
+					<p class="serial-tag">SCRAPE ERRORS: {scraperrorsCount}</p>
+				</div>
 			{/if}
 
 			{#if skippedCount > 0}
@@ -232,9 +284,15 @@
 				</div>
 			{/if}
 
+			{#if importErrors > 0}
+				<div class="mt-3" style="color: var(--secondary)">
+					<p class="serial-tag">IMPORT ERRORS: {importErrors}</p>
+				</div>
+			{/if}
+
 			{#if errorLog.length > 0}
 				<details class="mt-4">
-					<summary class="cursor-pointer text-sm" style="color: var(--secondary)">ERRORS ({errorLog.length})</summary>
+					<summary class="cursor-pointer text-sm" style="color: var(--secondary)">ERROR LOG ({errorLog.length})</summary>
 					<div class="mt-2 max-h-48 overflow-y-auto space-y-1">
 						{#each errorLog as e}
 							<div class="rounded px-3 py-1.5 text-xs" style="background: color-mix(in srgb, var(--secondary-red) 10%, transparent); color: var(--secondary)">
@@ -251,7 +309,7 @@
 	{#if done && !crawling}
 		<div class="panel p-6 text-center">
 			<p class="font-heading text-xl font-bold" style="color: var(--accent)">CRAWL COMPLETE</p>
-			<p class="serial-tag mt-2">{newCount} NEW, {mergedCount} MERGED, {skippedCount} SKIPPED, {errorLog.length} ERRORS</p>
+			<p class="serial-tag mt-2">{newCount} NEW, {mergedCount} MERGED, {skippedCount} SKIPPED, {errorLog.length} LOGGED</p>
 		</div>
 	{/if}
 </div>

@@ -22,7 +22,11 @@ export async function POST({ request }: RequestEvent) {
 	for (const title of pageTitles) {
 		try {
 			const entry = await crawler.scrape(title);
-			if (entry) entries.push(entry);
+			if (entry) {
+				entries.push(entry);
+			} else {
+				errors.push({ title, error: "Parser returned null — no title extracted" });
+			}
 		} catch (err: unknown) {
 			errors.push({ title, error: err instanceof Error ? err.message : String(err) });
 		}
