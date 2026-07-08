@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { getDb } from "./db";
+import { ADMIN_KEY } from "$env/static/private";
 
 export interface ApiKey {
 	id: string;
@@ -60,7 +61,7 @@ import { validateSession } from "./admin-auth";
 
 export function isAdminRequest(request: Request): boolean {
 	const auth = request.headers.get("authorization") ?? "";
-	return auth === `Bearer ${process.env.ADMIN_KEY}`;
+	return auth === `Bearer ${ADMIN_KEY}`;
 }
 
 export function isAdminRequestFromEvent(event: {
@@ -68,7 +69,7 @@ export function isAdminRequestFromEvent(event: {
 	cookies: { get: (name: string) => string | undefined };
 }): boolean {
 	const auth = event.request.headers.get("authorization") ?? "";
-	if (auth === `Bearer ${process.env.ADMIN_KEY}`) return true;
+	if (auth === `Bearer ${ADMIN_KEY}`) return true;
 	return false; // session check handled upstream in the endpoint
 }
 
@@ -77,7 +78,7 @@ export async function isAdminFromEvent(event: {
 	cookies: { get: (name: string) => string | undefined };
 }): Promise<boolean> {
 	const auth = event.request.headers.get("authorization") ?? "";
-	if (auth === `Bearer ${process.env.ADMIN_KEY}`) return true;
+	if (auth === `Bearer ${ADMIN_KEY}`) return true;
 
 	const sessionId = event.cookies.get("admin_session");
 	if (sessionId && (await validateSession(sessionId))) return true;

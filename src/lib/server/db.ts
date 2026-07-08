@@ -1,6 +1,7 @@
 import { MongoClient, type Db } from "mongodb";
 import { CAPRepository, type ICAPBaseDocument, type CrawlSourceRecord } from "@crazygiscool/cap";
 import { getSettings } from "./settings";
+import { MONGODB_URI } from "$env/static/private";
 
 export type { CrawlSourceRecord };
 
@@ -47,7 +48,7 @@ let _repo: CharacterRepo | null = null;
 export function getDb(): Db {
 	if (!_db) {
 		const settings = getSettings();
-		_client = new MongoClient(process.env.MONGODB_URI ?? "mongodb://localhost:27017");
+		_client = new MongoClient(MONGODB_URI ?? "mongodb://localhost:27017");
 		_db = _client.db(settings.databaseName);
 	}
 	return _db;

@@ -1,5 +1,6 @@
 import { randomUUID, randomBytes, pbkdf2Sync } from "node:crypto";
 import { getDb } from "./db";
+import { ADMIN_KEY } from "$env/static/private";
 
 const SALT_LENGTH = 32;
 const KEY_LENGTH = 64;
@@ -39,8 +40,8 @@ export async function createAdminUser(
 	password: string,
 	adminKey: string,
 ): Promise<"ok" | "invalid-key" | "already-configured" | "missing-env"> {
-	if (!process.env.ADMIN_KEY) return "missing-env";
-	if (adminKey !== process.env.ADMIN_KEY) return "invalid-key";
+	if (!ADMIN_KEY) return "missing-env";
+	if (adminKey !== ADMIN_KEY) return "invalid-key";
 
 	const existing = await getAdminConfig();
 	if (existing) return "already-configured";

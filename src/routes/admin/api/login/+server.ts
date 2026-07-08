@@ -1,5 +1,6 @@
 import { json, type RequestEvent } from "@sveltejs/kit";
 import { verifyAdminLogin } from "$lib/server/admin-auth";
+import { NODE_ENV } from "$env/static/private";
 
 export async function POST({ request, cookies }: RequestEvent) {
 	const body = await request.json();
@@ -19,7 +20,7 @@ export async function POST({ request, cookies }: RequestEvent) {
 		path: "/",
 		httpOnly: true,
 		sameSite: "strict",
-		secure: process.env.NODE_ENV === "production",
+		secure: NODE_ENV === "production",
 		maxAge: 60 * 60 * 24,
 	});
 
