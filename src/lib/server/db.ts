@@ -23,6 +23,21 @@ export class CharacterRepo extends CAPRepository<CharacterEntry> {
 	constructor(db: Db) {
 		super(db, "characters");
 	}
+
+	async listAll(): Promise<CharacterEntry[]> {
+		return this.collection.find({}, { projection: { _id: 0 } }).toArray() as Promise<CharacterEntry[]>;
+	}
+
+	async findById(id: string): Promise<CharacterEntry | null> {
+		return this.collection.findOne({ id } as any, { projection: { _id: 0 } }) as Promise<CharacterEntry | null>;
+	}
+
+	async findByName(name: string): Promise<CharacterEntry | null> {
+		return this.collection.findOne(
+			{ name: { $regex: name, $options: "i" } } as any,
+			{ projection: { _id: 0 } },
+		) as Promise<CharacterEntry | null>;
+	}
 }
 
 let _client: MongoClient | null = null;
