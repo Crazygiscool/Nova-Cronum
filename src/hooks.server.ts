@@ -1,7 +1,12 @@
-import type { Handle } from "@sveltejs/kit";
+import type { Handle, RequestEvent } from "@sveltejs/kit";
 import { validateApiKey } from "$lib/server/auth";
 
 const WRITE_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+export function handleError({ error, event, status, message }: { error: Error; event: RequestEvent; status: number; message: string }) {
+	console.error(`[${status}] ${event.url.pathname}:`, error);
+	return { message: error.message || message };
+}
 
 export const handle: Handle = async ({ event, resolve }) => {
 	if (WRITE_METHODS.has(event.request.method)) {
