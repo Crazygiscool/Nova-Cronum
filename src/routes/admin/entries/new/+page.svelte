@@ -41,12 +41,9 @@
 			...customValues,
 		};
 
-		const res = await fetch("/api/v1/entries", {
+		const res = await fetch("/admin/api/entries", {
 			method: "POST",
-			headers: {
-				"content-type": "application/json",
-				authorization: `Bearer ${localStorage.getItem("admin_key")}`,
-			},
+			headers: { "content-type": "application/json" },
 			body: JSON.stringify(body),
 		});
 
