@@ -17,7 +17,7 @@
 
 <nav class="sidebar fixed left-0 top-0 z-50 flex h-full w-64 flex-col py-6">
 	<div class="mb-8 px-6">
-		<h1 class="font-heading text-lg font-bold tracking-wider text-primary">NOVA CRONUM</h1>
+		<h1 class="font-heading text-lg font-bold tracking-wider text-white">NOVA CRONUM</h1>
 		<p class="serial-tag mt-1">CENTRAL ARCHIVE PROTOCOL</p>
 	</div>
 
